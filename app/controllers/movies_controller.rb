@@ -8,19 +8,49 @@ class MoviesController < ApplicationController
 
   def index
     @all_ratings = Movie.all_ratings
-    if (params[:ratings] == nil)
-      @ratings_to_show = []
-    else
-      @ratings_to_show = params[:ratings].keys
-    end
-    if (params[:sort_by] != nil)
-      if (params[:sort_by] == 'title')
-        @movies = Movie.sort_on('title',@ratings_to_show)
+    logger.debug "sessions: #{session.keys.inspect}"
+    logger.debug "params: #{params.keys.inspect}"
+    if (params.keys.length == 2) # must use sessions data
+      @using_session = true
+      if (session[:ratings] == nil)
+        @ratings_to_show = []
       else
-        @movies = Movie.sort_on('release_date',@ratings_to_show)
+        @ratings_to_show = session[:ratings].keys
       end
-    else
-      @movies = Movie.with_ratings(@ratings_to_show)
+      if (session[:sort_by] != nil)
+        if (session[:sort_by] == 'title')
+          @movies = Movie.sort_on('title',@ratings_to_show)
+        else
+          @movies = Movie.sort_on('release_date',@ratings_to_show)
+        end
+      else
+        @movies = Movie.with_ratings(@ratings_to_show)
+      end
+      logger.debug "sessions ratings: #{session['ratings'].inspect}"
+      logger.debug "sessions sort: #{session['sort_by'].inspect}"
+    else # params are not empty
+      @using_session = false
+      session.clear
+      if (params[:ratings] == nil)
+        @ratings_to_show = []
+      else
+        @ratings_to_show = params[:ratings].keys
+      end
+      if (params[:sort_by] != nil)
+        if (params[:sort_by] == 'title')
+          @movies = Movie.sort_on('title',@ratings_to_show)
+        else
+          @movies = Movie.sort_on('release_date',@ratings_to_show)
+        end
+      else
+        @movies = Movie.with_ratings(@ratings_to_show)
+      end
+      if (params['sort_by'] != nil)
+        session['sort_by'] = params['sort_by']
+      end
+      if (params['ratings'] != nil)
+        session['ratings'] = params['ratings']
+      end
     end
   end
 
