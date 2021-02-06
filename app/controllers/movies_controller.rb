@@ -6,16 +6,30 @@ class MoviesController < ApplicationController
     # will render app/views/movies/show.<extension> by default
   end
 
+  # redirect_to(movies_path( your_param_variables_set_over_here ))
+  # yes ratings, yes sort by
+  # yes ratings no sort_by
+  # no ratings yes sort by
+  # no ratings no sort_by
   def index
     @all_ratings = Movie.all_ratings
     if (params.keys.length == 2) # must use sessions data
       @using_session = true
       if (session[:ratings] == nil)
-        @ratings_to_show = []
+        if (session[:sort_by] == nil)
+          # not sure what to do here
+        else # sorting to send into redirect
+          redirect_to(movies_path({"sort_by" => session[:sort_by]}))
+        end
       else
-        @ratings_to_show = session[:ratings].keys
+        if (session[:sort_by] == nil) # has ratings, no sort_by
+          redirect_to(movies_path({"ratings" => session[:ratings]}))
+        else # has ratings and sort_by
+          redirect_to(movies_path({"sort_by" => session[:sort_by],"ratings" => session[:ratings]}))
+        end
+       
       end
-      if (session[:sort_by] != nil)
+      """if (session[:sort_by] != nil)
         if (session[:sort_by] == 'title')
           @movies = Movie.sort_on('title',@ratings_to_show)
         else
@@ -23,7 +37,7 @@ class MoviesController < ApplicationController
         end
       else
         @movies = Movie.with_ratings(@ratings_to_show)
-      end
+      end"""
     else # params are not empty
       @using_session = false
       session.clear
