@@ -31,8 +31,9 @@ class MoviesController < ApplicationController
         end
         logger.debug "to put in params: #{session[:ratings]}"
         @ratings_to_show = session[:ratings].keys
+
       end
-      if (session[:sort_by] != nil)
+      """if (session[:sort_by] != nil)
         if (session[:sort_by] == 'title')
           @movies = Movie.sort_on('title',@ratings_to_show)
         else
@@ -40,7 +41,7 @@ class MoviesController < ApplicationController
         end
       else
         @movies = Movie.with_ratings(@ratings_to_show)
-      end
+      end"""
     else # params are not empty
       @using_session = false
       session.clear
