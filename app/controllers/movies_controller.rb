@@ -8,8 +8,6 @@ class MoviesController < ApplicationController
 
   def index
     @all_ratings = Movie.all_ratings
-    logger.debug "sessions: #{session.keys.inspect}"
-    logger.debug "params: #{params.keys.inspect}"
     if (params.keys.length == 2) # must use sessions data
       @using_session = true
       if (session[:ratings] == nil)
@@ -26,8 +24,6 @@ class MoviesController < ApplicationController
       else
         @movies = Movie.with_ratings(@ratings_to_show)
       end
-      logger.debug "sessions ratings: #{session['ratings'].inspect}"
-      logger.debug "sessions sort: #{session['sort_by'].inspect}"
     else # params are not empty
       @using_session = false
       session.clear
