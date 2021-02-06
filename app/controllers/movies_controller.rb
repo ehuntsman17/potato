@@ -16,7 +16,6 @@ class MoviesController < ApplicationController
     if (params.keys.length == 2) # must use sessions data
       if (session[:ratings] == nil)
         if (session[:sort_by] == nil)
-          # not sure what to do here
           @ratings_to_show = Movie.all_ratings
           @movies = Movie.with_ratings(@ratings_to_show)
           render :index
@@ -29,19 +28,7 @@ class MoviesController < ApplicationController
         else # has ratings and sort_by
           redirect_to(movies_path({"sort_by" => session[:sort_by],"ratings" => session[:ratings]}))
         end
-        logger.debug "to put in params: #{session[:ratings]}"
-        @ratings_to_show = session[:ratings].keys
-
       end
-      """if (session[:sort_by] != nil)
-        if (session[:sort_by] == 'title')
-          @movies = Movie.sort_on('title',@ratings_to_show)
-        else
-          @movies = Movie.sort_on('release_date',@ratings_to_show)
-        end
-      else
-        @movies = Movie.with_ratings(@ratings_to_show)
-      end"""
     else # params are not empty
       @using_session = false
       session.clear
