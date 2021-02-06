@@ -6,11 +6,6 @@ class MoviesController < ApplicationController
     # will render app/views/movies/show.<extension> by default
   end
 
-  # redirect_to(movies_path( your_param_variables_set_over_here ))
-  # yes ratings, yes sort by
-  # yes ratings no sort_by
-  # no ratings yes sort by
-  # no ratings no sort_by
   def index
     @all_ratings = Movie.all_ratings
     if (params.keys.length == 2) # must use sessions data
